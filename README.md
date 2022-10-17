@@ -1,7 +1,7 @@
 # NVISII MVS
 This repo contains multiple ways to load 3d models in nvisii and render views around it/them.
 
-![mp4](https://i.imgur.com/CeLvZ4V.mp4)
+![renders_example](https://i.imgur.com/O2BrQ2u.jpg)
 
 # Citation
 If you use this code in your research please cite the following: 
