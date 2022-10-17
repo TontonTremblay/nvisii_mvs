@@ -1,6 +1,7 @@
 # NVISII MVS
 This repo contains multiple ways to load 3d models in nvisii and render views around it/them.
-![Cameras Distribution](https://i.imgur.com/CeLvZ4V.mp4)
+
+https://i.imgur.com/CeLvZ4V.mp4
 
 # Citation
 If you use this code in your research please cite the following: 
