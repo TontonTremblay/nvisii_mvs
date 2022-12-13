@@ -1,0 +1,95 @@
+# these are the source of where these 3d models are
+model_source: lego
+
+model_path: content/brick_example/V8/
+
+# what sort of scene do you want to render
+# valid values: centered, falling
+scene_type: centered
+
+# camera section
+# valid value: random, fixed
+# fixed: fixed distance around the object
+# random: random around the scene
+camera_type: fixed
+
+# camera shots
+# how many frames to render when using random camera_type
+camera_nb_frames: 1
+
+# camera distance: fixed or zoomed
+# fixed: makes sure the camera can see the object 
+# from any angle
+# zoomed: uses the segmentation to make the object
+# appear as close to the camera as possible while 
+# being fully seen.
+camera_distance: fixed
+
+# distance factor to multiply to move the camera 
+# away from the object. Only have impact if 
+# camera_distance is set to fixed
+camera_fixed_distance_factor: 1
+
+# The camera look at, if it not specified (value:=[]) it uses 
+# the scene centroid
+camera_look_at: []
+
+
+# camera parameters
+# range to sample within
+# theta is the sitting plane, e.g., x-y plane
+camera_theta_range: [0,360]
+#this is the height of the camera range
+camera_elevation_range: [40,90]
+
+# camera_type: fixed use this to control number of 
+# frames to render. 
+# how many shots on the x,y plane, e.g., the circle
+camera_theta_shots: 180
+# how many planes to render. Equal division. 
+camera_elevation_shots: 1
+
+# parameters for falling object scene
+# number of objects to let fall
+# the same object could be loaded multiple times.
+falling_nb_objects: 1
+
+# the size for letting the objects falling in
+falling_cube_size: 0.4
+
+# camera field of view
+camera_fov: 0.785398
+
+
+# scene extra
+# using a random dome light to illuminate the scene
+add_dome_hdri: False
+path_dome_hdri_haven: ../dome_hdri_haven/
+dome_light_intensity: 1.2 
+# Adding a table 
+add_table: False
+table_size: 0.4
+# table color: white or texture
+# if texture uses a random coo_texture
+table_color: white
+table_texture_scale: 0.1
+path_cco_textures: ../cco_textures/
+
+
+# rendering
+
+# sample per pixel for rendering
+sample_per_pixel: 2000
+# image width and height
+width: 400
+height: 400
+
+# file format style - png or exr
+file_format: png
+
+render_alpha: True
+
+# use denoiser
+denoiser: True
+# where to store the images and metadata
+outf: output/360_views/
