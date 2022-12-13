@@ -9,7 +9,7 @@ import numpy as np
 import glob 
 
 
-# These functions were provided by Lucas Manuelli
+# These functions were provided by Lucas Manuelli 
 def create_visualizer(clear=True, zmq_url='tcp://127.0.0.1:6000'):
     """
     If you set zmq_url=None it will start a server
@@ -22,14 +22,14 @@ def create_visualizer(clear=True, zmq_url='tcp://127.0.0.1:6000'):
     return vis
 
 def make_frame(vis, name, T=None, h=0.15, radius=0.001, o=1.0):
-  """Add a red-green-blue triad to the Meschat visualizer.
-  Args:
-    vis (MeshCat Visualizer): the visualizer
-    name (string): name for this frame (should be unique)
-    h (float): height of frame visualization
-    radius (float): radius of frame visualization
-    o (float): opacity
-  """
+    """Add a red-green-blue triad to the Meschat visualizer.
+    Args:
+      vis (MeshCat Visualizer): the visualizer
+      name (string): name for this frame (should be unique)
+      h (float): height of frame visualization
+      radius (float): radius of frame visualization
+      o (float): opacity
+    """
     vis[name]['x'].set_object(
         g.Cylinder(height=h, radius=radius),
         g.MeshLambertMaterial(color=0xff0000, reflectivity=0.8, opacity=o))

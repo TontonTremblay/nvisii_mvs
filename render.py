@@ -72,21 +72,15 @@ def sphere_renders(
     positions_to_render = []
     for i_plane in range(nb_planes):
         elevation = np.deg2rad(  elevation_range[0] + \
-                                ((i_plane) * (elevation_range[1]-elevation_range[0])/(nb_planes-1)))
-        to_add_azimuth = np.deg2rad(float(i_plane)/(nb_planes) * ((tetha_range[1]-tetha_range[0])/nb_circle))
-        to_add_azimuth = 0 
-
+                                ((i_plane+1) * (elevation_range[1]-elevation_range[0])/(nb_planes+1)))
         for i_circle in range(nb_circle):
-            azimuth = np.deg2rad(tetha_range[0]+((i_circle) * (tetha_range[1]-tetha_range[0])/(nb_circle)))
-            print(np.rad2deg(elevation),np.rad2deg(azimuth))
+            azimuth = np.deg2rad(tetha_range[0]+((i_circle+1) * (tetha_range[1]-tetha_range[0])/(nb_circle+1)))
             eye_position = [
-                np.sin(elevation)*np.cos(azimuth+to_add_azimuth),
-                np.sin(elevation)*np.sin(azimuth+to_add_azimuth),
+                np.sin(elevation)*np.cos(azimuth),
+                np.sin(elevation)*np.sin(azimuth),
                 np.cos(elevation),
             ]
             positions_to_render.append(eye_position)
-            if elevation == 0:
-                break
     return positions_to_render
 
 def random_sample_sphere(
@@ -248,8 +242,10 @@ elif cfg.model_source == "lego":
     # print(entity_visii_name_list)
     # raise()
     export_names = entity_visii_name_list
-    # entity_list = export_names
-
+    export_names = [visii.entity.get(entity_visii_name_list[0]).get_transform().get_parent().get_name()]
+    # cuboid = add_cuboid(export_names[0], debug=False)
+    # cuboids[entity_visii.get_name()] = cuboid
+    
 elif cfg.model_source == "low_poly_car":
     entity_visii_name_list = load_poly_cars(cfg.model_path)
     export_names = entity_visii_name_list
@@ -259,7 +255,7 @@ elif cfg.model_source == "obj":
     entity_visii_name_list = visii.import_scene(
         cfg.model_path,
         visii.vec3(0,0,0),
-        visii.vec3(.1,.1,.1), # the scale
+        visii.vec3(1,1,1), # the scale
         visii.angleAxis(1.57, visii.vec3(1,0,0))
         # visii.angleAxis(1.57, visii.vec3(1,0,0))
     )
@@ -279,21 +275,23 @@ elif cfg.model_source == "obj":
         #     random.uniform(0.8,1),
         #     random.uniform(0.9,1)
         # )
-    # for m in entity_visii_name_list.materials:
-    #     print(m.get_name())
-    #     rgb = colorsys.hsv_to_rgb(
-    #         random.uniform(0,1),
-    #         random.uniform(0.8,1),
-    #         random.uniform(0.9,1)
-    #     )
+    for m in entity_visii_name_list.materials:
+        print(m.get_name())
+        rgb = colorsys.hsv_to_rgb(
+            random.uniform(0,1),
+            random.uniform(0.8,1),
+            random.uniform(0.9,1)
+        )
 
-    #     m.set_base_color(
-    #         visii.vec3(
-    #             rgb[0],
-    #             rgb[1],
-    #             rgb[2],
-    #         )
-    #     )  
+        m.set_base_color(
+            visii.vec3(
+                1,
+                1,
+                1,
+            )
+        )  
+        m.set_roughness(0.7)
+        m.set_metallic(1)
     # raise()
 elif cfg.model_source == "ply":
     if 'obj'in cfg.model_path:
@@ -475,17 +473,36 @@ if cfg.point_light:
     light_entity = visii.entity.create(
         name = name_point_light,
         transform = visii.transform.create(name_point_light),
-        light = visii.light.create(name_point_light)
+        light = visii.light.create(name_point_light),
+
     )
+    if "light_scale" in cfg:
+        light_entity.set_mesh(visii.mesh.create_sphere("light"))
+        light_entity.get_transform().set_scale(cfg.light_scale)
+
 
     light_entity.get_light().set_intensity(cfg.light_intensity)
-    light_entity.get_light().set_falloff(0)
+    light_entity.get_light().set_falloff(100)
     
-    visii.set_dome_light_intensity(0)
+    # visii.set_dome_light_intensity(0)
 
     export_names.append(light_entity.get_name())
 
-    if cfg.light_movement: 
+    # light_position: [1,1,1]
+    # light_temperature: 1000
+    if "light_temperature" in cfg:
+        light_entity.get_light().set_temperature(cfg.light_temperature)
+    if "light_position" in cfg:
+        light_positions=[cfg.light_position]
+        # print(light_positions)
+        light_entity.get_transform().set_position(
+            visii.vec3(
+                cfg.light_position[0],
+                cfg.light_position[1],
+                cfg.light_position[2]
+            )
+        )
+    elif cfg.light_movement: 
         light_positions = random_sample_sphere(
                                 nb_frames = cfg.camera_nb_frames,
                                 elevation_range = [15,85],
@@ -603,7 +620,7 @@ elif "visii_sun" in cfg and cfg.visii_sun:
                         )        
 
     pos_light = light_positions[0]
-    pos_light = [0.8075491469781921, 0.0018738600208743073, 0.5898446662654822]
+    # pos_light = [0.8075491469781921, 0.0018738600208743073, 0.5898446662654822]
 
     with open("light.txt",'w')as f:
         f.write(f"pos:{str(pos_light)},temperature:{light_tmp}")
@@ -688,9 +705,9 @@ if cfg.camera_type == 'fixed':
             look_at_trans.append({
                 'at': center_scene_model,
                 'up': [0,0,1],
-                'eye': [pos[0]*float(distance)*1.3,
-                        pos[1]*float(distance)*1.3,
-                        pos[2]*float(distance)*1.3]              
+                'eye': [pos[0]*float(distance)*cfg.camera_fixed_distance_factor,
+                        pos[1]*float(distance)*cfg.camera_fixed_distance_factor,
+                        pos[2]*float(distance)*cfg.camera_fixed_distance_factor]              
                 })
 elif cfg.camera_type == 'random':
     positions_to_render = random_sample_sphere(
@@ -832,8 +849,8 @@ if cfg.model_source == "cube":
         'eye': [cfg.camera_fixed_distance_factor,0,0]
         }
 
-if cfg.model_source == 'lego':
-    export_names = []
+# if cfg.model_source == 'lego':
+#     export_names = []
 
 if opt.interactive:
     # TODO

@@ -1,20 +1,31 @@
-# NVISII MULTIVIEW SYNTHETISER 
+# NVISII Multi-View Synthetiser 
 
 ![renders_example](https://i.imgur.com/O2BrQ2u.jpg)
 
 This repo is the skeleton code used to generate different dataset, [RTMV](https://www.cs.umd.edu/~mmeshry/projects/rtmv/), [watch it move](https://nvlabs.github.io/watch-it-move/), [graspnerf](https://nerfgrasp.github.io/), etc.
 
+## Installation 
 
-## Making a motion video
-Please download the following [file](https://github.com/torresjrjr/Bezier.py/blob/master/Bezier.py) and put it in this folder. 
+This code base needs a special version of NViSII, which you can download [here](https://www.dropbox.com/s/m85v7ts981xs090/nvisii-1.2.dev47%2Bgf122b5b.72-cp36-cp36m-manylinux2014_x86_64.whl?dl=0). From there do the following, 
+```
+pip install nvisii-1.2.dev47+gf122b5b.72-cp36-cp36m-manylinux2014_x86_64.whl
+``` 
 
-![EXAMPLE](https://i.imgur.com/WKyz34b.mp4)
+# Rendering scenes
 
-In the config file you need to specify the `camera_type: camera_movement` and the number of anchor points you want your motion to be in render, `camera_nb_anchor: 70`. 
-This will generate 70 anchor points within the sphere defined by `camera_theta_range` and `camera_elevation_range`. 
-The size of the sphere is defined by `camera_fixed_distance_factor`. 
-If no `look_at` is defined, then the algorithm randomly picked an object to look at which is also smoothed out over time. 
-Finaly, you can defined a translation to be applied to the camera if you think the camera is too close to the scene, or the movement to wide, `to_add_position: [0.3,0,0]`. 
+The RTMV datasets has 4 types of environment. These can be recreated by using the different configs. Please note that this repo does not have any downloadable content, links a provided for you to visualize the data. 
+
+On top of the RTMV like dataset you can generate, we also offer a config to render a 360 view of a model. You are also welcome to generate your own config file as the scene config driven feel free to mix things up. 
+
+## 360 view of an object or scene
+
+
+
+## Falling object scene
+
+## Using hdri map
+
+
 
 
 
