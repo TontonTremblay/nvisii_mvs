@@ -57,14 +57,14 @@ def make_json_file(json_files,out_file = 'transforms'):
 
   out['aabb'] = [
     [
-      data['camera_data']['scene_min_3d_box'][0]*3,
-      data['camera_data']['scene_min_3d_box'][1]*3,
-      data['camera_data']['scene_min_3d_box'][2]*3,
+      data['camera_data']['scene_min_3d_box'][0],
+      data['camera_data']['scene_min_3d_box'][1],
+      data['camera_data']['scene_min_3d_box'][2],
     ],
     [
-      data['camera_data']['scene_max_3d_box'][0]*3,
-      data['camera_data']['scene_max_3d_box'][1]*3,
-      data['camera_data']['scene_max_3d_box'][2]*3,
+      data['camera_data']['scene_max_3d_box'][0],
+      data['camera_data']['scene_max_3d_box'][1],
+      data['camera_data']['scene_max_3d_box'][2],
     ],
   ]
 

@@ -1,0 +1,9 @@
+https://www.dropbox.com/s/tm5tit9xqo3ouzc/nvisii-1.2.dev47%2Bgf122b5b.72-cp36-cp36m-manylinux2014_x86_64.whl?dl=0
+pyrr 
+open3d
+trasnforms3d
+pybullet
+trimesh
+python-opencv
+pyyaml
+randomcolor
