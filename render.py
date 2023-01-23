@@ -701,13 +701,19 @@ if cfg.camera_type == 'fixed':
     if "scaling_zoom" in cfg and cfg.scaling_zoom:
         # raise()
         look_at_trans = []
+        scaling = max([
+                abs(bb_max[0]-bb_min[0]),
+                abs(bb_max[1]-bb_min[1]),
+                abs(bb_max[2]-bb_min[2])
+            ])
+
         for pos in positions_to_render:
             look_at_trans.append({
                 'at': center_scene_model,
                 'up': [0,0,1],
-                'eye': [pos[0]*float(distance)*cfg.camera_fixed_distance_factor,
-                        pos[1]*float(distance)*cfg.camera_fixed_distance_factor,
-                        pos[2]*float(distance)*cfg.camera_fixed_distance_factor]              
+                'eye': [pos[0]*float(scaling)*cfg.camera_fixed_distance_factor,
+                        pos[1]*float(scaling)*cfg.camera_fixed_distance_factor,
+                        pos[2]*float(scaling)*cfg.camera_fixed_distance_factor]              
                 })
 elif cfg.camera_type == 'random':
     positions_to_render = random_sample_sphere(
