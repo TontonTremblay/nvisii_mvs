@@ -13,8 +13,8 @@ import trimesh
 import yaml 
 import cv2
 
-# from utils import *
-from nvisiijohn.utils import *
+from utils import *
+# from nvisiijohn.utils import *
 
 parser = argparse.ArgumentParser()
 
