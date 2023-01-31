@@ -9,6 +9,8 @@ import cv2
 import glob
 import numpy as np
 import pyexr
+import transforms3d 
+
 parser = argparse.ArgumentParser()
 
 parser.add_argument(
@@ -30,6 +32,27 @@ parser.add_argument(
     default = 0,
     help = 'How many images do you want to use as test, counting backwards'
 )
+parser.add_argument(
+    '--opencv', 
+    action="store_true",
+    help = 'if you ended up generating this with opencv coordinate frame'
+)
+parser.add_argument(
+    '--row', 
+    action="store_true",
+    help = 'row major vs row major'
+)
+def visii_camera_frame_to_rdf(T_world_Cv):
+    """Rotates the camera frame to "right-down-forward" frame
+    Returns:
+        T_world_camera: 4x4 numpy array in "right-down-forward" coordinates
+    """
+    # C = camera frame (right-down-forward)
+    # Cv = visii camera frame (right-up-back)
+    T_Cv_C = np.eye(4)
+    T_Cv_C[:3, :3] = transforms3d.euler.euler2mat(np.pi, 0, 0)
+    T_world_C = T_world_Cv @ T_Cv_C
+    return T_world_C.tolist()
 
 def make_json_file(json_files,out_file = 'transforms'):
   out = {}
@@ -49,9 +72,26 @@ def make_json_file(json_files,out_file = 'transforms'):
 
     fr={}
     fr["file_path"]= f"{file_name.split('/')[-1].split('.')[0]}.{opt.ext}"
-    fr["transform_matrix"]=[[c2w[0][0],c2w[1][0],c2w[2][0],c2w[3][0]*scale],
-                            [c2w[0][1],c2w[1][1],c2w[2][1],c2w[3][1]*scale],
-                            [c2w[0][2],c2w[1][2],c2w[2][2],c2w[3][2]*scale],
+    if opt.opencv: 
+      if opt.row:
+        fr["transform_matrix"]=visii_camera_frame_to_rdf(np.array([
+                            [c2w[0][0],c2w[0][1],c2w[0][2],c2w[0][3]],
+                            [c2w[1][0],c2w[1][1],c2w[1][2],c2w[1][3]],
+                            [c2w[2][0],c2w[2][1],c2w[2][2],c2w[2][3]],
+                            [c2w[3][0],c2w[3][1],c2w[3][2],c2w[3][3]]]))
+
+      else:
+        fr["transform_matrix"]=visii_camera_frame_to_rdf(np.array([
+                            [c2w[0][0],c2w[1][0],c2w[2][0],c2w[3][0]],
+                            [c2w[0][1],c2w[1][1],c2w[2][1],c2w[3][1]],
+                            [c2w[0][2],c2w[1][2],c2w[2][2],c2w[3][2]],
+                            [c2w[0][3],c2w[1][3],c2w[2][3],c2w[3][3]]]))
+
+
+    else:
+      fr["transform_matrix"]=[[c2w[0][0],c2w[1][0],c2w[2][0],c2w[3][0]],
+                            [c2w[0][1],c2w[1][1],c2w[2][1],c2w[3][1]],
+                            [c2w[0][2],c2w[1][2],c2w[2][2],c2w[3][2]],
                             [c2w[0][3],c2w[1][3],c2w[2][3],c2w[3][3]]]  
     out['frames'].append(fr)
 
