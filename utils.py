@@ -2059,14 +2059,19 @@ def export_to_ndds_file(
         else:
             # print(np.unique(segmentation_mask.astype(int)))
             # print(np.isin(np.unique(segmentation_mask).astype(int),
-            #         [int(name_to_id[obj_name])]))
+            #         [int(id_keys_map[obj_name])]))
+
             try:
-                if int(id_keys_map[obj_name]) in np.unique(segmentation_mask.astype(int)): 
+                # if int(id_keys_map[obj_name]) in np.unique(segmentation_mask.astype(int)): 
+                if True in np.isin(np.unique(segmentation_mask).astype(int),
+                    [int(id_keys_map[obj_name])]): 
                     #
                     visibility = 1
+                    print(obj_name,"visibile")
                     y,x = np.where(segmentation_mask == int(id_keys_map[obj_name]))
                     bounding_box = [int(min(x)),int(max(x)),height-int(max(y)),height-int(min(y))]
                 else:
+                    print(obj_name,'not')
                     visibility = 0
             except:
                 visibility= -1
@@ -2759,7 +2764,7 @@ def load_nvidia_scanned(path,suffix = ""):
 
 
     node_name = node_name + suffix
-    usd_data = usd_import.import_mesh(obj_to_load, time=0,with_normals=True)
+    usd_data = import_mesh(obj_to_load, time=0,with_normals=True)
 
     # print("vertices",usd_data.vertices.shape)
     # print("face_normals",usd_data.face_normals.shape)

@@ -42,6 +42,14 @@ parser.add_argument(
     help = "visualize the rendering process - need x server\
             no rendering/metadata will be saved"
 )
+parser.add_argument(
+    '--visibility',
+    action = 'store_true',
+    default = False,
+    help = "Compute the visibility for each object in percentage"
+)
+
+
 opt = parser.parse_args()
 
 
@@ -54,9 +62,11 @@ if opt.outf is not None:
 if opt.model_path is not None:
     cfg.model_path = opt.model_path
 
-
 if cfg.file_format is None:
     cfg.file_format = "exr"
+
+if 'compute_visibility' in cfg:
+    opt.visibility = cfg['compute_visibility']
 
 # # # # # # # # # # # # # # # # # # # # # # # # #
 
@@ -916,7 +926,15 @@ for i_trans,trans_look_at in enumerate(look_at_trans):
         x_sample_interval = (.5,.5), 
         y_sample_interval = (.5,.5)
     )
-    
+    if i_trans == 0:
+        # bug that first frame needs a rgb render first 
+        
+        visii.render_to_file(
+            width=int(cfg.width), 
+            height=int(cfg.height), 
+            samples_per_pixel=int(cfg.sample_per_pixel),
+            file_path=f"{cfg.outf}/{str(i_frame).zfill(5)}.{cfg.file_format}"
+        )
     segmentation_array = visii.render_data(
         width=int(cfg.width), 
         height=int(cfg.height), 
@@ -935,6 +953,7 @@ for i_trans,trans_look_at in enumerate(look_at_trans):
         camera_struct = camera_struct,
         segmentation_mask = np.array(segmentation_array).reshape(cfg.height,cfg.width,4)[:,:,0],
         scene_aabb = scene_aabb,
+        visibility_percentage=opt.visibility,
     )
     depth_array = visii.render_data_to_file(
         width=int(cfg.width), 

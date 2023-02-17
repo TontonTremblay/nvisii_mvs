@@ -65,7 +65,7 @@ camera_elevation_shots: 1
 # parameters for falling object scene
 # number of objects to let fall
 # the same object could be loaded multiple times.
-falling_nb_objects: [3,8]
+falling_nb_objects: [2,3]
 
 # the size for letting the objects falling in
 falling_cube_size: 3

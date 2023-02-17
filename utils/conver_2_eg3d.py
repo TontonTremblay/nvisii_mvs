@@ -68,8 +68,9 @@ opt = parser.parse_args()
 
 archive_root_dir, save_bytes, close_dest = open_dest(opt.outf)
 labels = []
+from tqdm import tqdm
 
-for i_folder, folder in enumerate(sorted(glob.glob(opt.path+"*/"))):
+for i_folder, folder in enumerate(tqdm(sorted(glob.glob(opt.path+"*/")))):
     
     imgs = glob.glob(folder + "*.png") 
 
@@ -96,7 +97,7 @@ for i_folder, folder in enumerate(sorted(glob.glob(opt.path+"*/"))):
         img = PIL.Image.fromarray(img)
         img.save(image_bits, format='png', compress_level=0, optimize=False)
         save_bytes(os.path.join(archive_root_dir,f'{name_folder}/{name}.png'), image_bits.getbuffer())
-        save_bytes(os.path.join(archive_root_dir,f'{str(i_folder).zfill(4)}_{name_folder}/{name}.png'), image_bits.getbuffer())
+        # save_bytes(os.path.join(archive_root_dir,f'{str(i_folder).zfill(4)}_{name_folder}/{name}.png'), image_bits.getbuffer())
 
         # load the data 
         with open(img_path.replace("png","json"), 'r') as f:
@@ -105,9 +106,11 @@ for i_folder, folder in enumerate(sorted(glob.glob(opt.path+"*/"))):
         
         flat_intrinsiscs = [
             meta['camera_data']['intrinsics']['fx']/alpha.shape[0],0,meta['camera_data']['intrinsics']['cx']/alpha.shape[0],
-            0,meta['camera_data']['intrinsics']['fy']/alpha.shape[0],meta['camera_data']['intrinsics']['cy']/alpha.shape[0]
+            0,meta['camera_data']['intrinsics']['fy']/alpha.shape[0],meta['camera_data']['intrinsics']['cy']/alpha.shape[0],
         ]
-        output = [os.path.join(archive_root_dir,f'{name_folder}/{name}.png'),trans.tolist()+flat_intrinsiscs]
+        # print(trans.tolist()+flat_intrinsiscs)
+        # raise()
+        output = [os.path.join(archive_root_dir,f'{name_folder}/{name}.png'),trans.tolist()+flat_intrinsiscs+[0,0,1]]
         labels.append(output)
 
 #save the meta data
